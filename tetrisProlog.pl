@@ -19,20 +19,22 @@
 %      ##      #       ###      ##        #
 %              ##                         #
 %                                         #
-pieza(0, [[0, 0], [0, 0], [0, 1], [1, 0], [1, 1]]).
-pieza(1, [[1, 0], [0, 0], [0, 1], [1, 0], [2, 0]]).
-pieza(2, [[2, 0], [0, 0], [0, 1], [0, 2], [1, 1]]).
-pieza(3, [[3, 0], [0, 0], [0, 1], [1, 1], [1, 2]]).
-pieza(4, [[4, 0], [0, 0], [1, 0], [2, 0], [3, 0]]).
+pieza(0, 0, [[0, 0], [0, 0], [0, 1], [1, 0], [1, 1]]).
+pieza(1, 0, [[1, 0], [0, 0], [0, 1], [1, 0], [2, 0]]).
+pieza(2, 0, [[2, 0], [0, 0], [0, 1], [0, 2], [1, 1]]).
+pieza(3, 0, [[3, 0], [0, 0], [0, 1], [1, 1], [1, 2]]).
+pieza(4, 0, [[4, 0], [0, 0], [1, 0], [2, 0], [3, 0]]).
 
 % Reglas
 
 % TDA Pieza
 % Constructor
 crearPieza(IdPieza, Salida):-
-    pieza(IdPieza, _), pieza(IdPieza, Salida), !.
+    pieza(IdPieza, _, _), pieza(IdPieza, _, Salida), !.
 
 % Funciones de pertenencia
+esPieza([[IdPieza, Giros]|_]):-
+    IdPieza >= 0, IdPieza =< 4, Giros >= 0, Giros =< 3.
 
 % Selectores
 
