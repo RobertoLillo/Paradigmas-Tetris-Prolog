@@ -37,6 +37,11 @@ esPieza([[IdPieza, Giros]|_]):-
     IdPieza >= 0, IdPieza =< 4, Giros >= 0, Giros =< 3.
 
 % Selectores
+getIdPieza([[IdPieza, _]|_], Salida):-
+    Salida is IdPieza.
+
+getCantidadDeGiros([[_, Giros]|_], Salida):-
+    Salida is Giros.
 
 % Modificadores
 
