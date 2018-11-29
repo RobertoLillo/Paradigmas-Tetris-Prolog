@@ -1,2 +1,2 @@
 # tetrisProlog
-Lab 1 Paradigmas Prolog (2-2018)
+Lab 2 Paradigmas Prolog (2-2018)
