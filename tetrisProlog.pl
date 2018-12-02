@@ -52,7 +52,7 @@ pieza(7, 1, [[7, 1], [0, 0], [1, 0], [1, 1], [2, 1]]).
 crearPieza(IdPieza, Salida):-
     IdPieza >= 1, IdPieza =< 7, pieza(IdPieza, 0, Salida), !.
 
-% Funciones de pertenencia
+% Pertenencia
 esPieza([[IdPieza, Giros]|_]):-
     IdPieza >= 1, IdPieza =< 5, Giros >= 0, Giros =< 3.
 
@@ -80,6 +80,7 @@ girarPieza([[IdPieza, Giros]|_], Salida):-
     pieza(IdPieza, _, _), IdPieza = 7, Giros = 1, pieza(IdPieza, 0, Salida), !.
 
 % Operadores
+% No hay.
 
 % -_-_-_-_-_-_-_TDA Tablero_-_-_-_-_-_-_-
 % Estos son los tableros ya incluidos en la base de conocimientos.
@@ -185,7 +186,7 @@ girarPieza([[IdPieza, Giros]|_], Salida):-
 % Hechos
 
 % Tablero 1
-tablero(5, 10, 3, [
+tablero(5, 10, 3, [5, 10, 3, [
     [0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0],
@@ -195,11 +196,10 @@ tablero(5, 10, 3, [
     [5, 0, 0, 0, 0],
     [5, 2, 4, 0, 0],
     [5, 2, 4, 4, 0],
-    [5, 2, 2, 4, 0]]
-    ).
+    [5, 2, 2, 4, 0]]]).
 
 % Tablero 2
-tablero(5, 10, 6, [
+tablero(5, 10, 6, [5, 10, 6, [
     [0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0],
@@ -209,11 +209,10 @@ tablero(5, 10, 6, [
     [5, 3, 6, 6, 6],
     [5, 3, 3, 4, 6],
     [5, 3, 3, 4, 4],
-    [5, 3, 3, 3, 4]]
-    ).
+    [5, 3, 3, 3, 4]]]).
 
 % Tablero 3
-tablero(5, 10, 9, [
+tablero(5, 10, 9, [5, 10, 9, [
     [0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0],
@@ -223,11 +222,10 @@ tablero(5, 10, 9, [
     [0, 0, 5, 4, 4],
     [0, 3, 5, 0, 4],
     [3, 3, 5, 1, 1],
-    [0, 3, 5, 1, 1]]
-    ).
+    [0, 3, 5, 1, 1]]]).
 
 % Tablero 4
-tablero(10, 12, 5, [
+tablero(10, 12, 5, [10, 12, 5, [
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -239,11 +237,10 @@ tablero(10, 12, 5, [
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 1, 1, 4, 0, 0, 0, 0, 0, 0],
     [0, 1, 1, 4, 4, 0, 3, 0, 1, 1],
-    [5, 5, 5, 5, 4, 3, 3, 3, 1, 1]]
-    ).
+    [5, 5, 5, 5, 4, 3, 3, 3, 1, 1]]]).
 
 % Tablero 5
-tablero(10, 12, 8, [
+tablero(10, 12, 8, [10, 12, 8, [
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -255,11 +252,10 @@ tablero(10, 12, 8, [
     [5, 0, 0, 0, 7, 7, 0, 0, 2, 0, 0, 0],
     [5, 0, 0, 0, 6, 7, 0, 0, 2, 2, 4, 0],
     [5, 1, 1, 0, 6, 0, 3, 0, 1, 1, 4, 4],
-    [5, 1, 1, 6, 6, 3, 3, 3, 1, 1, 0, 4]]
-    ).
+    [5, 1, 1, 6, 6, 3, 3, 3, 1, 1, 0, 4]]]).
 
 %Tablero 6
-tablero(20, 20, 10, [
+tablero(20, 20, 10, [20, 20, 10, [
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -280,8 +276,35 @@ tablero(20, 20, 10, [
     [0, 1, 1, 0, 2, 2, 0, 4, 4, 2, 5, 5, 3, 3, 3, 7, 7, 5, 0, 6],
     [0, 5, 5, 5, 5, 2, 4, 4, 0, 2, 5, 5, 6, 2, 2, 2, 7, 5, 6, 6],
     [1, 1, 0, 0, 0, 2, 1, 1, 0, 0, 5, 5, 6, 2, 7, 7, 3, 5, 1, 1],
-    [1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 5, 6, 6, 7, 7, 3, 3, 3, 1, 1]]
-    ).
+    [1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 5, 6, 6, 7, 7, 3, 3, 3, 1, 1]]]).
+
+% Reglas
+% Constructor
+createBoard(N, M, GamePieces, _, Board):-
+    tablero(N, M, GamePieces,_), tablero(N, M, GamePieces, Board), !.
+
+% Pertenencia
+checkBoard([Ancho, Alto, _, Representacion]):-
+    medirAncho(Ancho, Representacion), medirAlto(Alto, Representacion).
+
+medirAncho(_,[]):- !.
+medirAncho(Ancho,[X|Xs]):-
+    medir(X, Cantidad), Cantidad is Ancho, medirAncho(Ancho, Xs).
+
+medirAlto(Alto, X):-
+    medir(X, Cantidad), Cantidad is Alto.
+
+medir([], 0):- !.
+medir([_|Xs], Cantidad):-
+    medir(Xs, CantidadAnt), Cantidad is CantidadAnt + 1.
+
+% Selector
+
+% Modificador
+
+% Operadores
+
+
 %------------------------------%
 
 % Papeo
