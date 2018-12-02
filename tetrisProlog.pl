@@ -13,13 +13,14 @@
 
 % Clausulas de Horn
 
-% TDA Pieza
+% -_-_-_-_-_-_-_TDA Pieza_-_-_-_-_-_-_-
+% Piezas iniciales sin ningún giro:
+%   1) 11  2) 2   3)  3    4)  44   5)  5   6)  6   7)  77
+%      11     2      333      44        5       6      77
+%             22                        5      66
+%                                       5
+
 % Hechos
-% Piezas iniciales sin ningún giro, son las siguientes:
-%   1) ##   2) #    3)  #    4)  ##   5)  #
-%      ##      #       ###      ##        #
-%              ##                         #
-%                                         #
 pieza(1, 0, [[1, 0], [0, 0], [0, 1], [1, 0], [1, 1]]).
 
 pieza(2, 0, [[2, 0], [0, 0], [0, 1], [1, 0], [2, 0]]).
@@ -49,7 +50,7 @@ pieza(7, 1, [[7, 1], [0, 0], [1, 0], [1, 1], [2, 1]]).
 % Reglas
 % Constructor
 crearPieza(IdPieza, Salida):-
-    pieza(IdPieza, _, _), pieza(IdPieza, _, Salida), !.
+    IdPieza >= 1, IdPieza =< 7, pieza(IdPieza, 0, Salida), !.
 
 % Funciones de pertenencia
 esPieza([[IdPieza, Giros]|_]):-
@@ -63,6 +64,20 @@ getCantidadDeGiros([[_, Giros]|_], Salida):-
     Salida is Giros.
 
 % Modificadores
+girarPieza([[IdPieza, Giros]|_], Salida):-
+    pieza(IdPieza, _, _), IdPieza = 1, pieza(IdPieza, _, Salida), !;
+    pieza(IdPieza, _, _), IdPieza = 2, Giros < 3, NuevoGiro is Giros + 1, pieza(IdPieza, NuevoGiro, Salida), !;
+    pieza(IdPieza, _, _), IdPieza = 2, Giros = 3, pieza(IdPieza, 0, Salida), !;
+    pieza(IdPieza, _, _), IdPieza = 3, Giros < 3, NuevoGiro is Giros + 1, pieza(IdPieza, NuevoGiro, Salida), !;
+    pieza(IdPieza, _, _), IdPieza = 3, Giros = 3, pieza(IdPieza, 0, Salida), !;
+    pieza(IdPieza, _, _), IdPieza = 4, Giros = 0, pieza(IdPieza, 1, Salida), !;
+    pieza(IdPieza, _, _), IdPieza = 4, Giros = 1, pieza(IdPieza, 0, Salida), !;
+    pieza(IdPieza, _, _), IdPieza = 5, Giros = 0, pieza(IdPieza, 1, Salida), !;
+    pieza(IdPieza, _, _), IdPieza = 5, Giros = 1, pieza(IdPieza, 0, Salida), !;
+    pieza(IdPieza, _, _), IdPieza = 6, Giros < 3, NuevoGiro is Giros + 1, pieza(IdPieza, NuevoGiro, Salida), !;
+    pieza(IdPieza, _, _), IdPieza = 6, Giros = 3, pieza(IdPieza, 0, Salida), !;
+    pieza(IdPieza, _, _), IdPieza = 7, Giros = 0, pieza(IdPieza, 1, Salida), !;
+    pieza(IdPieza, _, _), IdPieza = 7, Giros = 1, pieza(IdPieza, 0, Salida), !.
 
 % Operadores
 
