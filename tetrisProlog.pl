@@ -298,7 +298,8 @@ medir([], 0):- !.
 medir([_|Xs], Cantidad):-
     medir(Xs, CantidadAnterior), Cantidad is CantidadAnterior + 1.
 
-
+agregar([], [Elemento], Elemento).
+agregar([X|Xs], [X|Ys], Elemento):- agregar(Xs, Ys, Elemento).
 
 
 % Selector
