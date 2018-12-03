@@ -281,22 +281,25 @@ tablero(20, 20, 10, [20, 20, 10, [
 % Reglas
 % Constructor
 createBoard(N, M, GamePieces, _, Board):-
-    tablero(N, M, GamePieces,_), tablero(N, M, GamePieces, Board), !.
+    tablero(N, M, GamePieces, _), tablero(N, M, GamePieces, Board), !.
 
 % Pertenencia
-checkBoard([Ancho, Alto, _, Representacion]):-
-    medirAncho(Ancho, Representacion), medirAlto(Alto, Representacion).
+checkBoard([Ancho, Alto, _, ListaPiezas]):-
+    medirAncho(Ancho, ListaPiezas), medirAlto(Alto, ListaPiezas).
 
 medirAncho(_,[]):- !.
 medirAncho(Ancho,[X|Xs]):-
     medir(X, Cantidad), Cantidad is Ancho, medirAncho(Ancho, Xs).
 
-medirAlto(Alto, X):-
-    medir(X, Cantidad), Cantidad is Alto.
+medirAlto(Alto, ListaPiezas):-
+    medir(ListaPiezas, Cantidad), Cantidad is Alto.
 
 medir([], 0):- !.
 medir([_|Xs], Cantidad):-
-    medir(Xs, CantidadAnt), Cantidad is CantidadAnt + 1.
+    medir(Xs, CantidadAnterior), Cantidad is CantidadAnterior + 1.
+
+
+
 
 % Selector
 
@@ -306,6 +309,3 @@ medir([_|Xs], Cantidad):-
 
 
 %------------------------------%
-
-% Papeo
-esPar(X) :- 0 is X mod 2.
