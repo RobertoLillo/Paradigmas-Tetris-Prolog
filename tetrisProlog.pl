@@ -1,7 +1,16 @@
-% tetrisProlog
-% Laboratorio 2 Paradigmas de programación (2 - 2018).
-% Fecha de entrega: 7 de Diciembre.
-
+/*
+ * tetrisProlog
+ * Laboratorio 2 Paradigmas de programación (2 - 2018).
+ * Fecha de entrega: 7 de Diciembre.
+ *
+ * Requerimientos Mínimos:
+ * - createBoard -> Listo
+ * - checkBoard -> Falta contar las piezas
+ * - nextPiece -> Listo
+ * - play -> No lo he empezado
+ * - checkHorizontalLines -> No lo he empezado
+ * - boardToString -> No lo he empezado
+ */
 % Dominios
 
 
@@ -80,7 +89,7 @@ girarPieza([[IdPieza, Giros]|_], Salida):-
     pieza(IdPieza, _, _), IdPieza = 7, Giros = 1, pieza(IdPieza, 0, Salida), !.
 
 % Operadores
-% No hay.
+% No Hay
 
 % -_-_-_-_-_-_-_TDA Tablero_-_-_-_-_-_-_-
 % Estos son los tableros ya incluidos en la base de conocimientos.
@@ -301,12 +310,15 @@ medir([_|Xs], Cantidad):-
 agregar([], [Elemento], Elemento).
 agregar([X|Xs], [X|Ys], Elemento):- agregar(Xs, Ys, Elemento).
 
-
 % Selector
+getDimensiones([Ancho, Alto | Xs], [Ancho, Alto]):-
+    checkBoard([Ancho, Alto | Xs]).
 
 % Modificador
+% play
 
 % Operadores
-
+nextPiece(_, Seed, Piece):-
+    set_random(seed(Seed)), random(1, 7, IdPieza), pieza(IdPieza, 0, Piece).
 
 %------------------------------%
