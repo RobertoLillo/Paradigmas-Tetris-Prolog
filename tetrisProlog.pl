@@ -4,25 +4,37 @@
  * Fecha de entrega: 7 de Diciembre.
  *
  * Requerimientos Mínimos:
+ * - Hecho en SwiProlog -> Listo
+ * - Documentacion (Dominios, Predicados, Metas, Hechos, Reglas, Descripcion del programa) ->
+ * - Orden y claridad ->
+ * - Usar TDA en tablero y piezas -> Listo
  * - createBoard -> Listo
  * - checkBoard -> Falta contar las piezas
  * - nextPiece -> Listo
  * - play -> No lo he empezado
- * - checkHorizontalLines -> No lo he empezado
+ * - checkHorizontalLines -> Listo
  * - boardToString -> No lo he empezado
  */
-% Dominios
 
+/* Dominios
+ *
+ * 
+ */
 
-% Predicados
+/* Predicados
+ *
+ * 
+ */
 
-
-% Metas
+/* Metas
+ *
+ * 
+ */
 
 
 % Clausulas de Horn
 
-% -_-_-_-_-_-_-_TDA Pieza_-_-_-_-_-_-_-
+% ******************** TDA Pieza ********************
 % Piezas iniciales sin ningún giro:
 %   1) 11  2) 2   3)  3    4)  44   5)  5   6)  6   7)  77
 %      11     2      333      44        5       6      77
@@ -66,11 +78,9 @@ esPieza([[IdPieza, Giros]|_]):-
     IdPieza >= 1, IdPieza =< 5, Giros >= 0, Giros =< 3.
 
 % Selectores
-getIdPieza([[IdPieza, _]|_], Salida):-
-    Salida is IdPieza.
+getIdPieza([[IdPieza, _]|_], IdPieza):- !.
 
-getCantidadDeGiros([[_, Giros]|_], Salida):-
-    Salida is Giros.
+getCantidadDeGiros([[_, Giros]|_], Giros):- !.
 
 % Modificadores
 girarPieza([[IdPieza, Giros]|_], Salida):-
@@ -91,7 +101,7 @@ girarPieza([[IdPieza, Giros]|_], Salida):-
 % Operadores
 % No Hay
 
-% -_-_-_-_-_-_-_TDA Tablero_-_-_-_-_-_-_-
+% ******************** TDA Tablero ********************
 % Estos son los tableros ya incluidos en la base de conocimientos.
 /*
 1) Tablero 5x10, 3 piezas: 2, 4 y 5.
@@ -193,7 +203,6 @@ girarPieza([[IdPieza, Giros]|_], Salida):-
 */
 
 % Hechos
-
 % Tablero 1
 tablero(5, 10, 3, [5, 10, 3, [
     [0, 0, 0, 0, 0],
@@ -307,12 +316,12 @@ medir([], 0):- !.
 medir([_|Xs], Cantidad):-
     medir(Xs, CantidadAnterior), Cantidad is CantidadAnterior + 1.
 
-agregar([], [Elemento], Elemento).
-agregar([X|Xs], [X|Ys], Elemento):- agregar(Xs, Ys, Elemento).
-
 % Selector
-getDimensiones([Ancho, Alto | Xs], [Ancho, Alto]):-
-    checkBoard([Ancho, Alto | Xs]).
+getDimensiones([Ancho, Alto | _], Ancho, Alto):- !.
+
+getCantidadDePiezas([_, _, CantidadDePiezas, _], CantidadDePiezas):- !.
+
+getListaDePiezas([_, _, _, ListaDePiezas], ListaDePiezas):- !.
 
 % Modificador
 % play
@@ -320,5 +329,22 @@ getDimensiones([Ancho, Alto | Xs], [Ancho, Alto]):-
 % Operadores
 nextPiece(_, Seed, Piece):-
     set_random(seed(Seed)), random(1, 7, IdPieza), pieza(IdPieza, 0, Piece).
+
+checkHorizontalLines(Board, PosLines):-
+    getDimensiones(Board, _, Alto),
+    getListaDePiezas(Board, ListaDePiezas),
+    revisarLineasHorizontales(Alto, ListaDePiezas, [], PosLines).
+
+revisarLineasHorizontales(0, [], Auxiliar, Auxiliar):- !.
+revisarLineasHorizontales(Alto, [X|Xs], Auxiliar, SalidaFinal):-
+    not(member(0, X)) ->
+        (agregar(Auxiliar, Salida, Alto), NAlto is Alto - 1, revisarLineasHorizontales(NAlto, Xs, Salida, SalidaFinal));
+        (NAlto is Alto - 1, revisarLineasHorizontales(NAlto, Xs, Auxiliar, SalidaFinal)).
+
+
+%boardToString()
+
+agregar([], [Elemento], Elemento).
+agregar([X|Xs], [X|Ys], Elemento):- agregar(Xs, Ys, Elemento).
 
 %------------------------------%
