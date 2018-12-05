@@ -6,7 +6,7 @@
  * Requerimientos Mínimos:
  * - Hecho en SwiProlog -> Listo
  * - Documentacion (Dominios, Predicados, Metas, Hechos, Reglas, Descripcion del programa) ->
- * - Orden y claridad ->
+ * - Orden y claridad -> 
  * - Usar TDA en tablero y piezas -> Listo
  * - createBoard -> Listo
  * - checkBoard -> Falta contar las piezas
@@ -15,6 +15,115 @@
  * - checkHorizontalLines -> Listo
  * - boardToString -> Listo
  */
+
+% Piezas iniciales sin ningún giro:
+/*
+ *   1) AA  2) B   3)  C    4)  DD   5)  E   6)  F   7)  GG
+ *      AA     B      CCC      DD        E       F      GG
+ *             BB                        E      FF
+ *                                       E
+ */
+
+% Estos son los 6 tableros correctos (validos) ya incluidos en la base de conocimientos.
+/*
+1) Tablero 5x10, 3 piezas: 2, 4 y 5.
+- - - - - -
+|         |
+|         |
+|         |
+|         |
+|         |
+|         |
+|E        |
+|E B D    |
+|E B D D  |
+|E B B D  |
+- - - - - -
+
+2) Tablero 5x10, 6 piezas: 2, 3, 3, 4, 5 y 6.
+- - - - - -
+|         |
+|         |
+|         |
+|         |
+|      B  |
+|  B B B  |
+|E C F F F|
+|E C C D F|
+|E C C D D|
+|E C C C D|
+- - - - - -
+
+3) Tablero 5x10, 9 piezas: 1, 3, 4 y 5.
+- - - - - -
+|         |
+|        C|
+|A A   C C|
+|A A   G C|
+|E F F G G|
+|E F   D G|
+|E F E D D|
+|E C E   D|
+|C C E A A|
+|  C E A A|
+- - - - - -
+
+4) Tablero 10x12, 5 piezas: 1, 1, 3, 4 y 5.
+- - - - - - - - - - -
+|                   |
+|                   |
+|                   |
+|                   |
+|                   |
+|                   |
+|                   |
+|                   |
+|                   |
+|  A A D            |
+|  A A D D   C   A A|
+|E E E E D C C C A A|
+- - - - - - - - - - -
+
+5) Tablero 10x12, 8 piezas:
+- - - - - - - - - - - 
+|                   |
+|                   |
+|                   |
+|                   |
+|                   |
+|                   |
+|        G       B  |
+|E A A   G G     B  |
+|E A A   F G     B B|
+|E A A   F   C   A A|
+|E A A F F C C C A A|
+- - - - - - - - - - -
+
+6) Tablero 20x20, 10 piezas:
+- - - - - - - - - - - - - - - - - - - - -
+|                                       |
+|                                       |
+|                                       |
+|                                       |
+|                                       |
+|                                       |
+|                                       |
+|                                       |
+|                                       |
+|                                       |
+|                                       |
+|                                       |
+|                                       |
+|            F                          |
+|        D D F                          |
+|  A A D D F F   B B   E   C   G   E   F|
+|  A A   B B   D D B E E C C C G G E   F|
+|  E E E E B D D   B E E F B B B G E F F|
+|A A       B A A     E E F B G G C E A A|
+|A A         A A     E F F G G C C C A A|
+- - - - - - - - - - - - - - - - - - - - -
+*/
+
 
 /* Dominios
  *
@@ -35,12 +144,6 @@
 % Clausulas de Horn
 
 % ******************** TDA Pieza ********************
-% Piezas iniciales sin ningún giro:
-%   1) AA  2) B   3)  C    4)  DD   5)  E   6)  F   7)  GG
-%      AA     B      CCC      DD        E       F      GG
-%             BB                        E      FF
-%                                       E
-
 % Hechos
 pieza(1, 0, [[1, 0], [0, 0], [0, 1], [1, 0], [1, 1]]).
 
@@ -102,106 +205,6 @@ girarPieza([[IdPieza, Giros]|_], Salida):-
 % No Hay
 
 % ******************** TDA Tablero ********************
-% Estos son los tableros ya incluidos en la base de conocimientos.
-/*
-1) Tablero 5x10, 3 piezas: 2, 4 y 5.
-- - - - - -
-|         |
-|         |
-|         |
-|         |
-|         |
-|         |
-|E        |
-|E B D    |
-|E B D D  |
-|E B B D  |
-- - - - - -
-
-2) Tablero 5x10, 6 piezas: 2, 3, 3, 4, 5 y 6.
-- - - - - -
-|         |
-|         |
-|         |
-|         |
-|      B  |
-|  B B B  |
-|E C F F F|
-|E C C D F|
-|E C C D D|
-|E C C C D|
-- - - - - -
-
-3) Tablero 5x10, 9 piezas: 1, 3, 4 y 5 (Faltan piezas, tablero no valido).
-- - - - - -
-|         |
-|         |
-|         |
-|         |
-|         |
-|      D  |
-|    E D D|
-|  C E   D|
-|C C E A A|
-|  C E A A|
-- - - - - -
-
-4) Tablero 10x12, 5 piezas: 1, 1, 3, 4 y 5.
-- - - - - - - - - - -
-|                   |
-|                   |
-|                   |
-|                   |
-|                   |
-|                   |
-|                   |
-|                   |
-|                   |
-|  A A D            |
-|  A A D D   C   A A|
-|E E E E D C C C A A|
-- - - - - - - - - - -
-
-5) Tablero 10x12(Tablero no valido, medidas 12x12), 8 piezas:
-- - - - - - - - - - - - -
-|                       |
-|                       |
-|                       |
-|                       |
-|                       |
-|                       |
-|        G       B      |
-|E       G G     B      |
-|E       F G     B B D  |
-|E A A   F   C   A A D D|
-|E A A F F C C C A A   D|
-- - - - - - - - - - - - -
-
-6) Tablero 20x20, 10 piezas:
-- - - - - - - - - - - - - - - - - - - - -
-|                                       |
-|                                       |
-|                                       |
-|                                       |
-|                                       |
-|                                       |
-|                                       |
-|                                       |
-|                                       |
-|                                       |
-|                                       |
-|                                       |
-|                                       |
-|            F                          |
-|        D D F                          |
-|  A A D D F F   B B   E   C   G   E   F|
-|  A A   B B   D D B E E C C C G G E   F|
-|  E E E E B D D   B E E F B B B G E F F|
-|A A       B A A     E E F B G G C E A A|
-|A A         A A     E F F G G C C C A A|
-- - - - - - - - - - - - - - - - - - - - -
-*/
-
 % Hechos
 % Tablero 1
 tablero(5, 10, 3, [5, 10, 3, [
@@ -229,16 +232,16 @@ tablero(5, 10, 6, [5, 10, 6, [
     ['E', 'C', 'C', 'D', 'D'],
     ['E', 'C', 'C', 'C', 'D']]]).
 
-% Tablero 3 (FALTAN PIEZAS)
+% Tablero 3
 tablero(5, 10, 9, [5, 10, 9, [
     [' ', ' ', ' ', ' ', ' '],
-    [' ', ' ', ' ', ' ', ' '],
-    [' ', ' ', ' ', ' ', ' '],
-    [' ', ' ', ' ', ' ', ' '],
-    [' ', ' ', ' ', ' ', ' '],
-    [' ', ' ', ' ', 'D', ' '],
-    [' ', ' ', 'E', 'D', 'D'],
-    [' ', 'C', 'E', ' ', 'D'],
+    [' ', ' ', ' ', ' ', 'C'],
+    ['A', 'A', ' ', 'C', 'C'],
+    ['A', 'A', ' ', 'G', 'C'],
+    ['E', 'F', 'F', 'G', 'G'],
+    ['E', 'F', ' ', 'D', 'G'],
+    ['E', 'F', 'E', 'D', 'D'],
+    ['E', 'C', 'E', ' ', 'D'],
     ['C', 'C', 'E', 'A', 'A'],
     [' ', 'C', 'E', 'A', 'A']]]).
 
@@ -259,18 +262,18 @@ tablero(10, 12, 5, [10, 12, 5, [
 
 % Tablero 5 (MEDIDAS 12X12)
 tablero(10, 12, 8, [10, 12, 8, [
-    [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
-    [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
-    [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
-    [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
-    [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
-    [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
-    [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
-    [' ', ' ', ' ', ' ', 'G', ' ', ' ', ' ', 'B', ' ', ' ', ' '],
-    ['E', ' ', ' ', ' ', 'G', 'G', ' ', ' ', 'B', ' ', ' ', ' '],
-    ['E', ' ', ' ', ' ', 'F', 'G', ' ', ' ', 'B', 'B', 'D', ' '],
-    ['E', 'A', 'A', ' ', 'F', ' ', 'C', ' ', 'A', 'A', 'D', 'D'],
-    ['E', 'A', 'A', 'F', 'F', 'C', 'C', 'C', 'A', 'A', ' ', 'D']]]).
+    [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+    [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+    [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+    [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+    [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+    [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+    [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+    [' ', ' ', ' ', ' ', 'G', ' ', ' ', ' ', 'B', ' '],
+    ['E', 'A', 'A', ' ', 'G', 'G', ' ', ' ', 'B', ' '],
+    ['E', 'A', 'A', ' ', 'F', 'G', ' ', ' ', 'B', 'B'],
+    ['E', 'A', 'A', ' ', 'F', ' ', 'C', ' ', 'A', 'A'],
+    ['E', 'A', 'A', 'F', 'F', 'C', 'C', 'C', 'A', 'A']]]).
 
 %Tablero 6
 tablero(20, 20, 10, [20, 20, 10, [
