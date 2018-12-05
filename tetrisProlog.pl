@@ -1,19 +1,20 @@
 /*
- * tetrisProlog
+ * tetrisProlog.pl
  * Laboratorio 2 Paradigmas de programación (2 - 2018).
  * Fecha de entrega: 7 de Diciembre.
  *
  * Requerimientos Mínimos:
- * - Hecho en SwiProlog -> Listo
- * - Documentacion (Dominios, Predicados, Metas, Hechos, Reglas, Descripcion del programa) ->
- * - Orden y claridad -> 
- * - Usar TDA en tablero y piezas -> Listo
- * - createBoard -> Listo
- * - checkBoard -> Falta contar las piezas
- * - nextPiece -> Listo
- * - play -> No lo he empezado
- * - checkHorizontalLines -> Listo
- * - boardToString -> Listo
+ * - Hecho en SwiProlog                 -> Listo
+ * - Documentacion (Dom, Pre, Met, ...) -> Listo
+ * - Orden y claridad                   -> A la mitad
+ * - Usar TDA en tablero y piezas       -> Listo
+ * - Agregar tableros no validos        -> No empezado
+ * - createBoard                        -> Listo
+ * - checkBoard                         -> Falta contar las piezas
+ * - nextPiece                          -> Listo
+ * - play                               -> No empezado
+ * - checkHorizontalLines               -> Listo
+ * - boardToString                      -> Listo
  */
 
 % Piezas iniciales sin ningún giro:
@@ -125,26 +126,58 @@
 */
 
 
-/* Dominios
+/*  ***** Dominios *****
  *
  * 
  */
 
-/* Predicados
- *
+/* ***** Predicados ***** (Ordenados por aparicion del TDA)
  * 
+ * - TDA Pieza:
+ * pieza(numero, numero, pieza)
+ * crearPieza(numero, pieza)
+ * esPieza(pieza)
+ * getIdPieza(pieza, numero)
+ * getCantidadDeGiros(pieza, numero)
+ * girarPieza(pieza)
+ * 
+ * - TDA Board:
+ * tablero(numero, numero, numero, board)
+ * createBoard(numero, numero, numero, numero, board)
+ * checkBoard(board)
+ * medirAncho(numero, lista)
+ * medirAlto(numero, lista)
+ * medir(lista, numero)
+ * getDimensiones(board)
+ * getCantidadDePiezas(Board)
+ * getListaDePiezas(Board)
+ * "play"
+ * nextPiece(board, numero, pieza)
+ * siguientePieza(numero, pieza)
+ * checkHorizontalLines(board, lista)
+ * revisarLineasHorizontales(numero, lista, lista, lista)
+ * agregar(lista, lista, string)
+ * boardToString(board, string)
+ * crearTapa(numero, string, string)
+ * crearString(lista, string, string)   
  */
 
-/* Metas
- *
+/* ***** Metas *****
+ * Principal:
+ *  Creacion y verificacion de tableros validos (createBoard y checkBoard)
  * 
+ * Secundarias:
+ *  Conseguir piezas aleatorias para jugar (nextPiece),
+ *  jugar una pieza (play),
+ *  revisar lineas completas en un tablero (checkHorizontalLines),
+ *  crear un string que represente el tablero (boardToString).
  */
 
 
-% Clausulas de Horn
+% ***** Clausulas de Horn *****
 
 % ******************** TDA Pieza ********************
-% Hechos
+% ***** Hechos *****
 pieza(1, 0, [[1, 0], [0, 0], [0, 1], [1, 0], [1, 1]]).
 
 pieza(2, 0, [[2, 0], [0, 0], [0, 1], [1, 0], [2, 0]]).
@@ -171,21 +204,25 @@ pieza(6, 3, [[6, 3], [0, 0], [0, 1], [0, 2], [1, 0]]).
 pieza(7, 0, [[7, 0], [0, 1], [0, 2], [1, 0], [1, 1]]).
 pieza(7, 1, [[7, 1], [0, 0], [1, 0], [1, 1], [2, 1]]).
 
-% Reglas
-% Constructor
+% ***** Reglas *****
+
+% ***** Constructor*****
 crearPieza(IdPieza, Salida):-
     IdPieza >= 1, IdPieza =< 7, pieza(IdPieza, 0, Salida), !.
 
-% Pertenencia
+
+% ***** Pertenencia *****
 esPieza([[IdPieza, Giros]|_]):-
     IdPieza >= 1, IdPieza =< 5, Giros >= 0, Giros =< 3.
 
-% Selectores
+
+% ***** Selectores *****
 getIdPieza([[IdPieza, _]|_], IdPieza):- !.
 
 getCantidadDeGiros([[_, Giros]|_], Giros):- !.
 
-% Modificadores
+
+% ***** Modificadores *****
 girarPieza([[IdPieza, Giros]|_], Salida):-
     pieza(IdPieza, _, _), IdPieza = 1, pieza(IdPieza, _, Salida), !;
     pieza(IdPieza, _, _), IdPieza = 2, Giros < 3, NuevoGiro is Giros + 1, pieza(IdPieza, NuevoGiro, Salida), !;
@@ -201,11 +238,12 @@ girarPieza([[IdPieza, Giros]|_], Salida):-
     pieza(IdPieza, _, _), IdPieza = 7, Giros = 0, pieza(IdPieza, 1, Salida), !;
     pieza(IdPieza, _, _), IdPieza = 7, Giros = 1, pieza(IdPieza, 0, Salida), !.
 
-% Operadores
+% ***** Operadores *****
 % No Hay
 
+
 % ******************** TDA Tablero ********************
-% Hechos
+% ***** Hechos *****
 % Tablero 1
 tablero(5, 10, 3, [5, 10, 3, [
     [' ', ' ', ' ', ' ', ' '],
@@ -299,12 +337,15 @@ tablero(20, 20, 10, [20, 20, 10, [
     ['A', 'A', ' ', ' ', ' ', 'B', 'A', 'A', ' ', ' ', 'E', 'E', 'F', 'B', 'G', 'G', 'C', 'E', 'A', 'A'],
     ['A', 'A', ' ', ' ', ' ', ' ', 'A', 'A', ' ', ' ', 'E', 'F', 'F', 'G', 'G', 'C', 'C', 'C', 'A', 'A']]]).
 
-% Reglas
-% Constructor
+% ***** Reglas *****
+
+% ***** Constructor *****
 createBoard(N, M, GamePieces, _, Board):-
     tablero(N, M, GamePieces, _), tablero(N, M, GamePieces, Board), !.
 
-% Pertenencia
+
+% ***** Pertenencia *****
+% Predicado checkBoard y predicados de apoyo:
 checkBoard([Ancho, Alto, _, ListaPiezas]):-
     medirAncho(Ancho, ListaPiezas), medirAlto(Alto, ListaPiezas).
 
@@ -318,24 +359,30 @@ medirAlto(Alto, ListaPiezas):-
 medir([], 0):- !.
 medir([_|Xs], Cantidad):-
     medir(Xs, CantidadAnterior), Cantidad is CantidadAnterior + 1.
+% ----------
 
-% Selector
+
+% ***** Selector *****
 getDimensiones([Ancho, Alto | _], Ancho, Alto):- !.
 
 getCantidadDePiezas([_, _, CantidadDePiezas, _], CantidadDePiezas):- !.
 
 getListaDePiezas([_, _, _, ListaDePiezas], ListaDePiezas):- !.
 
-% Modificador
+% ***** Modificador *****
 % play
 
-% Operadores
+
+% ***** Operadores *****
+% Predicado nextPiece y predicados de apoyo:
 nextPiece(Board, Seed, Piece):-
     checkBoard(Board), siguientePieza(Seed, Piece), !.
     
 siguientePieza(Seed, Piece):-
     set_random(seed(Seed)), random(1, 7, IdPieza), pieza(IdPieza, 0, Piece).
+% ----------
 
+% Predicado checkHorizontalLines y predicados de apoyo:
 checkHorizontalLines(Board, PosLines):-
     getDimensiones(Board, _, Alto),
     getListaDePiezas(Board, ListaDePiezas),
@@ -347,7 +394,11 @@ revisarLineasHorizontales(Alto, [X|Xs], Auxiliar, SalidaFinal):-
         (agregar(Auxiliar, Salida, Alto), NAlto is Alto - 1, revisarLineasHorizontales(NAlto, Xs, Salida, SalidaFinal));
         (NAlto is Alto - 1, revisarLineasHorizontales(NAlto, Xs, Auxiliar, SalidaFinal)).
 
+agregar([], [Elemento], Elemento).
+agregar([X|Xs], [X|Ys], Elemento):- agregar(Xs, Ys, Elemento).
+% ----------
 
+% Predicado boartToString y predicados de apoyo:
 boardToString(Board, BoardStr):-
     checkBoard(Board),
     getDimensiones(Board, Ancho, _),
@@ -372,10 +423,6 @@ crearString([X|Xs], String, BoardStr):-
     string_concat(String, Salida3, Salida4),
     string_concat(Salida4, '\n', Salida5),
     crearString(Xs, Salida5, BoardStr).
-
-
+% ----------
 
 %------------------------------%
-
-agregar([], [Elemento], Elemento).
-agregar([X|Xs], [X|Ys], Elemento):- agregar(Xs, Ys, Elemento).
