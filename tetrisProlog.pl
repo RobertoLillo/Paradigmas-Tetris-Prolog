@@ -157,7 +157,7 @@
 |                       |
 - - - - - - - - - - - - -
 
-9) Tablero 5x10 pero sus medidas son 5x13, 3 piezas: 1, 3, 5.
+9) Tablero 5x10 pero sus medidas son 5x13, 4 piezas: 1, 3, 3, 5.
 - - - - - -
 |         |
 |         |
@@ -167,10 +167,10 @@
 |         |
 |         |
 |  E      |
-|  E      |
-|  E      |
-|  E      |
-|A A   C  |
+|  E E    |
+|  E E    |
+|  E E    |
+|A A E C  |
 |A A C C C|
 - - - - - -
 */
@@ -258,12 +258,17 @@ pieza(7, 1, [[7, 1], [0, 0], [1, 0], [1, 1], [2, 1]]).
 
 % ***** Constructor*****
 crearPieza(IdPieza, Salida):-
-    IdPieza >= 1, IdPieza =< 7, pieza(IdPieza, 0, Salida), !.
+    IdPieza >= 1, IdPieza =< 7,
+    pieza(IdPieza, 0, Salida), !.
 
 
 % ***** Pertenencia *****
 esPieza([[IdPieza, Giros]|_]):-
-    IdPieza >= 1, IdPieza =< 5, Giros >= 0, Giros =< 3.
+    IdPieza >= 1, IdPieza =< 5,
+    Giros >= 0, Giros =< 3.
+
+esBloque(Bloque):-
+    member(Bloque, ['A', 'B', 'C', 'D', 'E', 'F', 'G']).
 
 
 % ***** Selectores *****
@@ -416,7 +421,7 @@ tablero(10, 12, 0, [10, 12, 0, [
     [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ']]]).
 
 % Tablero 9 (Es de alto 13 en vez de 10)
-tablero(5, 10, 3, [5, 10, 3, [
+tablero(5, 10, 4, [5, 10, 3, [
     [' ', ' ', ' ', ' ', ' '],
     [' ', ' ', ' ', ' ', ' '],
     [' ', ' ', ' ', ' ', ' '],
@@ -425,10 +430,10 @@ tablero(5, 10, 3, [5, 10, 3, [
     [' ', ' ', ' ', ' ', ' '],
     [' ', ' ', ' ', ' ', ' '],
     [' ', 'E', ' ', ' ', ' '],
-    [' ', 'E', ' ', ' ', ' '],
-    [' ', 'E', ' ', ' ', ' '],
-    [' ', 'E', ' ', ' ', ' '],
-    ['A', 'A', ' ', 'C', ' '],
+    [' ', 'E', 'E', ' ', ' '],
+    [' ', 'E', 'E', ' ', ' '],
+    [' ', 'E', 'E', ' ', ' '],
+    ['A', 'A', 'E', 'C', ' '],
     ['A', 'A', 'C', 'C', 'C']]]).
 
 
@@ -436,24 +441,47 @@ tablero(5, 10, 3, [5, 10, 3, [
 
 % ***** Constructor *****
 createBoard(N, M, GamePieces, _, Board):-
-    tablero(N, M, GamePieces, _), tablero(N, M, GamePieces, Board), !.
+    tablero(N, M, GamePieces, _),
+    tablero(N, M, GamePieces, Board), !.
 
 
 % ***** Pertenencia *****
 % Predicado checkBoard y predicados de apoyo:
-checkBoard([Ancho, Alto, _, ListaPiezas]):-
-    medirAncho(Ancho, ListaPiezas), medirAlto(Alto, ListaPiezas).
+checkBoard([Ancho, Alto, CantidadDePiezas, ListaPiezas]):-
+    medirAncho(Ancho, ListaPiezas),
+    medirAlto(Alto, ListaPiezas),
+    contarPiezas(CantidadDePiezas, ListaPiezas, 0).
 
 medirAncho(_,[]):- !.
 medirAncho(Ancho,[X|Xs]):-
-    medir(X, Cantidad), Cantidad is Ancho, medirAncho(Ancho, Xs).
+    medir(X, Cantidad),
+    Cantidad is Ancho,
+    medirAncho(Ancho, Xs).
 
 medirAlto(Alto, ListaPiezas):-
-    medir(ListaPiezas, Cantidad), Cantidad is Alto.
+    medir(ListaPiezas, Cantidad),
+    Cantidad is Alto.
 
 medir([], 0):- !.
 medir([_|Xs], Cantidad):-
-    medir(Xs, CantidadAnterior), Cantidad is CantidadAnterior + 1.
+    medir(Xs, CantidadAnterior),
+    Cantidad is CantidadAnterior + 1.
+
+contarPiezas(CantidadDePiezas, [], Cantidad):-
+    Cantidad is CantidadDePiezas * 4.
+contarPiezas(CantidadDePiezas, [X|Xs], Cantidad):-
+    contarBloques(X, 0, Numero),
+    CantidadN is Cantidad + Numero,
+    contarPiezas(CantidadDePiezas, Xs, CantidadN).
+
+contarBloques([], Cantidad, Cantidad):- !.
+contarBloques([X|Xs], Cantidad, Numero):-
+    esBloque(X) ->
+        (CantidadN is Cantidad + 1,
+        contarBloques(Xs, CantidadN, Numero));
+        (contarBloques(Xs, Cantidad, Numero)).
+
+
 % ----------
 
 
@@ -471,10 +499,13 @@ getListaDePiezas([_, _, _, ListaDePiezas], ListaDePiezas):- !.
 % ***** Operadores *****
 % Predicado nextPiece y predicados de apoyo:
 nextPiece(Board, Seed, Piece):-
-    checkBoard(Board), siguientePieza(Seed, Piece), !.
+    checkBoard(Board),
+    siguientePieza(Seed, Piece), !.
     
 siguientePieza(Seed, Piece):-
-    set_random(seed(Seed)), random(1, 7, IdPieza), pieza(IdPieza, 0, Piece).
+    set_random(seed(Seed)),
+    random(1, 7, IdPieza),
+    pieza(IdPieza, 0, Piece).
 % ----------
 
 % Predicado checkHorizontalLines y predicados de apoyo:
@@ -486,8 +517,11 @@ checkHorizontalLines(Board, PosLines):-
 revisarLineasHorizontales(0, [], Auxiliar, Auxiliar):- !.
 revisarLineasHorizontales(Alto, [X|Xs], Auxiliar, SalidaFinal):-
     not(member(' ', X)) ->
-        (agregar(Auxiliar, Salida, Alto), NAlto is Alto - 1, revisarLineasHorizontales(NAlto, Xs, Salida, SalidaFinal));
-        (NAlto is Alto - 1, revisarLineasHorizontales(NAlto, Xs, Auxiliar, SalidaFinal)).
+        (agregar(Auxiliar, Salida, Alto),
+        NAlto is Alto - 1,
+        revisarLineasHorizontales(NAlto, Xs, Salida, SalidaFinal));
+        (NAlto is Alto - 1,
+        revisarLineasHorizontales(NAlto, Xs, Auxiliar, SalidaFinal)).
 
 agregar([], [Elemento], Elemento).
 agregar([X|Xs], [X|Ys], Elemento):- agregar(Xs, Ys, Elemento).
@@ -502,7 +536,7 @@ boardToString(Board, BoardStr):-
     crearTapa(AnchoTecho, '',TapaStr),
     string_concat(TapaStr, '\n', TapaStr2),
     crearString(ListaDePiezas, TapaStr2, StringTablero),
-    string_concat(StringTablero, TapaStr2, BoardStr).
+    string_concat(StringTablero, TapaStr2, BoardStr), !.
 
 crearTapa(0, String, String):- !.
 crearTapa(AnchoTecho, Entrada, TapaStr):-
