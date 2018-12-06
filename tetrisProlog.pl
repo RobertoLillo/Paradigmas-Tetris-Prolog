@@ -10,7 +10,7 @@
  * - Usar TDA en tablero y piezas       -> Listo
  * - Agregar tableros no validos        -> Listo
  * - createBoard                        -> Listo
- * - checkBoard                         -> Falta contar las piezas
+ * - checkBoard                         -> Listo
  * - nextPiece                          -> Listo
  * - play                               -> No empezado
  * - checkHorizontalLines               -> Listo
@@ -201,7 +201,6 @@
  * getDimensiones(board)
  * getCantidadDePiezas(Board)
  * getListaDePiezas(Board)
- * "play"
  * nextPiece(board, numero, pieza)
  * siguientePieza(numero, pieza)
  * checkHorizontalLines(board, lista)
@@ -266,9 +265,6 @@ crearPieza(IdPieza, Salida):-
 esPieza([[IdPieza, Giros]|_]):-
     IdPieza >= 1, IdPieza =< 5,
     Giros >= 0, Giros =< 3.
-
-esBloque(Bloque):-
-    member(Bloque, ['A', 'B', 'C', 'D', 'E', 'F', 'G']).
 
 
 % ***** Selectores *****
@@ -450,7 +446,7 @@ createBoard(N, M, GamePieces, _, Board):-
 checkBoard([Ancho, Alto, CantidadDePiezas, ListaPiezas]):-
     medirAncho(Ancho, ListaPiezas),
     medirAlto(Alto, ListaPiezas),
-    contarPiezas(CantidadDePiezas, ListaPiezas, 0).
+    contarPiezas(CantidadDePiezas, ListaPiezas, 0), !.
 
 medirAncho(_,[]):- !.
 medirAncho(Ancho,[X|Xs]):-
@@ -476,12 +472,10 @@ contarPiezas(CantidadDePiezas, [X|Xs], Cantidad):-
 
 contarBloques([], Cantidad, Cantidad):- !.
 contarBloques([X|Xs], Cantidad, Numero):-
-    esBloque(X) ->
+    member(X, ['A', 'B', 'C', 'D', 'E', 'F', 'G']) ->
         (CantidadN is Cantidad + 1,
         contarBloques(Xs, CantidadN, Numero));
         (contarBloques(Xs, Cantidad, Numero)).
-
-
 % ----------
 
 
