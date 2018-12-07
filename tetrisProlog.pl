@@ -296,7 +296,7 @@ girarPieza([[IdPieza, Giros]|_], Salida):-
 % ******************** TDA Tablero ********************
 % ***** Hechos *****
 % Tablero 1
-tablero(5, 10, 3, [5, 10, 3, [
+tablero(5, 10, 3, [5, 10, 3, 0, [
     [' ', ' ', ' ', ' ', ' '],
     [' ', ' ', ' ', ' ', ' '],
     [' ', ' ', ' ', ' ', ' '],
@@ -309,7 +309,7 @@ tablero(5, 10, 3, [5, 10, 3, [
     ['E', 'B', 'B', 'D', ' ']]]).
 
 % Tablero 2
-tablero(5, 10, 6, [5, 10, 6, [
+tablero(5, 10, 6, [5, 10, 6, 0, [
     [' ', ' ', ' ', ' ', ' '],
     [' ', ' ', ' ', ' ', ' '],
     [' ', ' ', ' ', ' ', ' '],
@@ -322,7 +322,7 @@ tablero(5, 10, 6, [5, 10, 6, [
     ['E', 'C', 'C', 'C', 'D']]]).
 
 % Tablero 3
-tablero(5, 10, 9, [5, 10, 9, [
+tablero(5, 10, 9, [5, 10, 9, 0, [
     [' ', ' ', ' ', ' ', ' '],
     [' ', ' ', ' ', ' ', 'C'],
     ['A', 'A', ' ', 'C', 'C'],
@@ -335,7 +335,7 @@ tablero(5, 10, 9, [5, 10, 9, [
     [' ', 'C', 'E', 'A', 'A']]]).
 
 % Tablero 4
-tablero(10, 12, 5, [10, 12, 5, [
+tablero(10, 12, 5, [10, 12, 5, 0, [
     [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
     [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
     [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
@@ -350,7 +350,7 @@ tablero(10, 12, 5, [10, 12, 5, [
     ['E', 'E', 'E', 'E', 'D', 'C', 'C', 'C', 'A', 'A']]]).
 
 % Tablero 5
-tablero(10, 12, 8, [10, 12, 8, [
+tablero(10, 12, 8, [10, 12, 8, 0, [
     [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
     [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
     [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
@@ -365,7 +365,7 @@ tablero(10, 12, 8, [10, 12, 8, [
     ['E', 'A', 'A', 'F', 'F', 'C', 'C', 'C', 'A', 'A']]]).
 
 % Tablero 6
-tablero(20, 20, 10, [20, 20, 10, [
+tablero(20, 20, 10, [20, 20, 10, 0, [
     [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
     [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
     [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
@@ -389,7 +389,7 @@ tablero(20, 20, 10, [20, 20, 10, [
     ['A', 'A', ' ', ' ', ' ', ' ', 'A', 'A', ' ', ' ', 'E', 'F', 'F', 'G', 'G', 'C', 'C', 'C', 'A', 'A']]]).
 
 % Tablero 7 (Faltan piezas)
-tablero(5, 10, 7, [5, 10, 7, [
+tablero(5, 10, 7, [5, 10, 7, 0, [
     [' ', ' ', ' ', ' ', ' '],
     [' ', ' ', ' ', ' ', ' '],
     [' ', ' ', ' ', ' ', ' '],
@@ -402,7 +402,7 @@ tablero(5, 10, 7, [5, 10, 7, [
     ['A', 'A', ' ', 'B', 'B']]]).
 
 % Tablero 8 (Es de ancho 12 en vez de 10)
-tablero(10, 12, 0, [10, 12, 0, [
+tablero(10, 12, 0, [10, 12, 0, 0, [
     [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
     [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
     [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
@@ -417,7 +417,7 @@ tablero(10, 12, 0, [10, 12, 0, [
     [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ']]]).
 
 % Tablero 9 (Es de alto 13 en vez de 10)
-tablero(5, 10, 4, [5, 10, 3, [
+tablero(5, 10, 4, [5, 10, 3, 0, [
     [' ', ' ', ' ', ' ', ' '],
     [' ', ' ', ' ', ' ', ' '],
     [' ', ' ', ' ', ' ', ' '],
@@ -443,7 +443,7 @@ createBoard(N, M, GamePieces, _, Board):-
 
 % ***** Pertenencia *****
 % Predicado checkBoard y predicados de apoyo:
-checkBoard([Ancho, Alto, CantidadDePiezas, ListaPiezas]):-
+checkBoard([Ancho, Alto, CantidadDePiezas, _, ListaPiezas]):-
     medirAncho(Ancho, ListaPiezas),
     medirAlto(Alto, ListaPiezas),
     contarPiezas(CantidadDePiezas, ListaPiezas, 0), !.
@@ -482,9 +482,11 @@ contarBloques([X|Xs], Cantidad, Numero):-
 % ***** Selector *****
 getDimensiones([Ancho, Alto | _], Ancho, Alto):- !.
 
-getCantidadDePiezas([_, _, CantidadDePiezas, _], CantidadDePiezas):- !.
+getCantidadDePiezas([_, _, CantidadDePiezas, _, _], CantidadDePiezas):- !.
 
-getListaDePiezas([_, _, _, ListaDePiezas], ListaDePiezas):- !.
+getPuntaje([_, _, _, Puntaje, _], Puntaje):- !.
+
+getListaDePiezas([_, _, _, _, ListaDePiezas], ListaDePiezas):- !.
 
 % ***** Modificador *****
 % play
