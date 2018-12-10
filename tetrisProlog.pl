@@ -19,8 +19,8 @@
 
 % Piezas iniciales sin ningún giro:
 /*
- *   1) AA  2) B   3)  C    4)  DD   5)  E   6)  F   7) GG
- *      AA     B      CCC      DD        E       F       GG
+ *   1) AA  2) B   3)  C    4)  DD   5)  E   6)  F   7)  GG
+ *      AA     B      CCC      DD        E       F      GG
  *             BB                        E      FF
  *                                       E
  */
@@ -60,9 +60,9 @@
 |         |
 |        C|
 |A A   C C|
-|A A   D C|
-|E F F D D|
-|E F   D D|
+|A A   G C|
+|E F F G G|
+|E F   D G|
 |E F E D D|
 |E C E   D|
 |C C E A A|
@@ -94,8 +94,8 @@
 |                   |
 |                   |
 |        G       B  |
-|E A A G G       B  |
-|E A A G F       B B|
+|E A A   G G     B  |
+|E A A   F G     B B|
 |E A A   F   C   A A|
 |E A A F F C C C A A|
 - - - - - - - - - - -
@@ -117,11 +117,11 @@
 |                                       |
 |            F                          |
 |        D D F                          |
-|  A A D D F F   B B   E   C   D   E   F|
-|  A A   B B   D D B E E C C C D D E   F|
-|  E E E E B D D   B E E F B B B D E F F|
-|A A       B A A     E E F B D D C E A A|
-|A A         A A     E F F D D C C C A A|
+|  A A D D F F   B B   E   C   G   E   F|
+|  A A   B B   D D B E E C C C G G E   F|
+|  E E E E B D D   B E E F B B B G E F F|
+|A A       B A A     E E F B G G C E A A|
+|A A         A A     E F F G G C C C A A|
 - - - - - - - - - - - - - - - - - - - - -
 */
 
@@ -177,8 +177,11 @@
 
 
 /*  ***** Dominios *****
- *
- * 
+ * numero = atomo
+ * lista = atomo
+ * string = atomo
+ * pieza = lista
+ * board = lista
  */
 
 /* ***** Predicados ***** (Ordenados por aparicion del TDA)
@@ -193,14 +196,21 @@
  * 
  * - TDA Board:
  * tablero(numero, numero, numero, board)
+ * tableroNV(numero, numero, numero, board)
  * createBoard(numero, numero, numero, numero, board)
  * checkBoard(board)
+ * checkearBoard(board)
  * medirAncho(numero, lista)
  * medirAlto(numero, lista)
  * medir(lista, numero)
- * getDimensiones(board)
- * getCantidadDePiezas(Board)
- * getListaDePiezas(Board)
+ * getDimensiones(board, numero, numero)
+ * getDimensionesAux(board, numero, numero)
+ * getCantidadDePiezas(board, numero)
+ * getCantidadDePiezasAux(board, numero)
+ * getPuntaje(board, numero)
+ * getPuntajeAux(board, numero)
+ * getListaDePiezas(board, lista)
+ * getListaDePiezasAux(board, lista)
  * nextPiece(board, numero, pieza)
  * siguientePieza(numero, pieza)
  * checkHorizontalLines(board, lista)
@@ -326,9 +336,9 @@ tablero(5, 10, 9, [5, 10, 9, 0, [
     [' ', ' ', ' ', ' ', ' '],
     [' ', ' ', ' ', ' ', 'C'],
     ['A', 'A', ' ', 'C', 'C'],
-    ['A', 'A', ' ', 'D', 'C'],
-    ['E', 'F', 'F', 'D', 'D'],
-    ['E', 'F', ' ', 'D', 'D'],
+    ['A', 'A', ' ', 'G', 'C'],
+    ['E', 'F', 'F', 'G', 'G'],
+    ['E', 'F', ' ', 'D', 'G'],
     ['E', 'F', 'E', 'D', 'D'],
     ['E', 'C', 'E', ' ', 'D'],
     ['C', 'C', 'E', 'A', 'A'],
@@ -359,8 +369,8 @@ tablero(10, 12, 8, [10, 12, 8, 0, [
     [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
     [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
     [' ', ' ', ' ', ' ', 'G', ' ', ' ', ' ', 'B', ' '],
-    ['E', 'A', 'A', 'G', 'G', ' ', ' ', ' ', 'B', ' '],
-    ['E', 'A', 'A', 'G', 'F', ' ', ' ', ' ', 'B', 'B'],
+    ['E', 'A', 'A', ' ', 'G', 'G', ' ', ' ', 'B', ' '],
+    ['E', 'A', 'A', ' ', 'F', 'G', ' ', ' ', 'B', 'B'],
     ['E', 'A', 'A', ' ', 'F', ' ', 'C', ' ', 'A', 'A'],
     ['E', 'A', 'A', 'F', 'F', 'C', 'C', 'C', 'A', 'A']]]).
 
@@ -382,14 +392,14 @@ tablero(20, 20, 10, [20, 20, 10, 0, [
     [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
     [' ', ' ', ' ', ' ', ' ', ' ', 'F', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
     [' ', ' ', ' ', ' ', 'D', 'D', 'F', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
-    [' ', 'A', 'A', 'D', 'D', 'F', 'F', ' ', 'B', 'B', ' ', 'E', ' ', 'C', ' ', 'D', ' ', 'E', ' ', 'F'],
-    [' ', 'A', 'A', ' ', 'B', 'B', ' ', 'D', 'D', 'B', 'E', 'E', 'C', 'C', 'C', 'D', 'D', 'E', ' ', 'F'],
-    [' ', 'E', 'E', 'E', 'E', 'B', 'D', 'D', ' ', 'B', 'E', 'E', 'F', 'B', 'B', 'B', 'D', 'E', 'F', 'F'],
-    ['A', 'A', ' ', ' ', ' ', 'B', 'A', 'A', ' ', ' ', 'E', 'E', 'F', 'B', 'D', 'D', 'C', 'E', 'A', 'A'],
-    ['A', 'A', ' ', ' ', ' ', ' ', 'A', 'A', ' ', ' ', 'E', 'F', 'F', 'D', 'D', 'C', 'C', 'C', 'A', 'A']]]).
+    [' ', 'A', 'A', 'D', 'D', 'F', 'F', ' ', 'B', 'B', ' ', 'E', ' ', 'C', ' ', 'G', ' ', 'E', ' ', 'F'],
+    [' ', 'A', 'A', ' ', 'B', 'B', ' ', 'D', 'D', 'B', 'E', 'E', 'C', 'C', 'C', 'G', 'G', 'E', ' ', 'F'],
+    [' ', 'E', 'E', 'E', 'E', 'B', 'D', 'D', ' ', 'B', 'E', 'E', 'F', 'B', 'B', 'B', 'G', 'E', 'F', 'F'],
+    ['A', 'A', ' ', ' ', ' ', 'B', 'A', 'A', ' ', ' ', 'E', 'E', 'F', 'B', 'G', 'G', 'C', 'E', 'A', 'A'],
+    ['A', 'A', ' ', ' ', ' ', ' ', 'A', 'A', ' ', ' ', 'E', 'F', 'F', 'G', 'G', 'C', 'C', 'C', 'A', 'A']]]).
 
 % Tablero 7 (Faltan piezas)
-tablero(5, 10, 7, [5, 10, 7, 0, [
+tableroNV(5, 10, 7, [5, 10, 7, 0, [
     [' ', ' ', ' ', ' ', ' '],
     [' ', ' ', ' ', ' ', ' '],
     [' ', ' ', ' ', ' ', ' '],
@@ -402,7 +412,7 @@ tablero(5, 10, 7, [5, 10, 7, 0, [
     ['A', 'A', ' ', 'B', 'B']]]).
 
 % Tablero 8 (Es de ancho 12 en vez de 10)
-tablero(10, 12, 0, [10, 12, 0, 0, [
+tableroNV(10, 12, 0, [10, 12, 0, 0, [
     [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
     [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
     [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
@@ -417,7 +427,7 @@ tablero(10, 12, 0, [10, 12, 0, 0, [
     [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ']]]).
 
 % Tablero 9 (Es de alto 13 en vez de 10)
-tablero(5, 10, 4, [5, 10, 3, 0, [
+tableroNV(5, 10, 4, [5, 10, 4, 0, [
     [' ', ' ', ' ', ' ', ' '],
     [' ', ' ', ' ', ' ', ' '],
     [' ', ' ', ' ', ' ', ' '],
@@ -436,17 +446,21 @@ tablero(5, 10, 4, [5, 10, 3, 0, [
 % ***** Reglas *****
 
 % ***** Constructor *****
-createBoard(N, M, GamePieces, _, Board):-
-    tablero(N, M, GamePieces, _),
+createBoard(N, M, GamePieces, Seed, Board):-
+    number(N), number(M), number(GamePieces), number(Seed),
     tablero(N, M, GamePieces, Board), !.
 
 
 % ***** Pertenencia *****
 % Predicado checkBoard y predicados de apoyo:
-checkBoard([Ancho, Alto, CantidadDePiezas, _, ListaPiezas]):-
+checkBoard(Board):-
+    checkearBoard(Board), !.
+
+checkearBoard([Ancho, Alto, CantidadDePiezas, Puntaje, ListaPiezas]):-
     medirAncho(Ancho, ListaPiezas),
     medirAlto(Alto, ListaPiezas),
-    contarPiezas(CantidadDePiezas, ListaPiezas, 0), !.
+    contarPiezas(CantidadDePiezas, ListaPiezas, 0), 
+    number(Puntaje), !.
 
 medirAncho(_,[]):- !.
 medirAncho(Ancho,[X|Xs]):-
@@ -480,13 +494,25 @@ contarBloques([X|Xs], Cantidad, Numero):-
 
 
 % ***** Selector *****
-getDimensiones([Ancho, Alto | _], Ancho, Alto):- !.
+getDimensiones(Board, Ancho, Alto):-
+    checkBoard(Board),
+    getDimensionesAux(Board, Ancho, Alto), !.
+getDimensionesAux([Ancho, Alto | _], Ancho, Alto):- !.
 
-getCantidadDePiezas([_, _, CantidadDePiezas, _, _], CantidadDePiezas):- !.
+getCantidadDePiezas(Board, CantidadDePiezas):-
+    checkBoard(Board),
+    getCantidadDePiezasAux(Board, CantidadDePiezas), !.
+getCantidadDePiezasAux([_, _, CantidadDePiezas, _, _], CantidadDePiezas):- !.
 
-getPuntaje([_, _, _, Puntaje, _], Puntaje):- !.
+getPuntaje(Board, Puntaje):-
+    checkBoard(Board),
+    getPuntajeAux(Board, Puntaje), !.
+getPuntajeAux([_, _, _, Puntaje, _], Puntaje):- !.
 
-getListaDePiezas([_, _, _, _, ListaDePiezas], ListaDePiezas):- !.
+getListaDePiezas(Board, ListaDePiezas):-
+    checkBoard(Board),
+    getListaDePiezasAux(Board, ListaDePiezas), !.
+getListaDePiezasAux([_, _, _, _, ListaDePiezas], ListaDePiezas):- !.
 
 % ***** Modificador *****
 % play
@@ -496,6 +522,7 @@ getListaDePiezas([_, _, _, _, ListaDePiezas], ListaDePiezas):- !.
 % Predicado nextPiece y predicados de apoyo:
 nextPiece(Board, Seed, Piece):-
     checkBoard(Board),
+    number(Seed),
     siguientePieza(Seed, Piece), !.
     
 siguientePieza(Seed, Piece):-
@@ -506,6 +533,7 @@ siguientePieza(Seed, Piece):-
 
 % Predicado checkHorizontalLines y predicados de apoyo:
 checkHorizontalLines(Board, PosLines):-
+    checkBoard(Board),
     getDimensiones(Board, _, Alto),
     getListaDePiezas(Board, ListaDePiezas),
     revisarLineasHorizontales(Alto, ListaDePiezas, [], PosLines).
