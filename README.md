@@ -1,2 +1,2 @@
-# tetrisProlog
-Lab 2 PDP Prolog (2-2018)
+# Paradigmas-Tetris-Prolog
+Laboratorio 1 Paradigmas de Programación. Prolog. (2-2018).
